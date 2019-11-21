@@ -1,0 +1,27 @@
+nom-colonne;typerubrique;longueur;légende;unité
+lib_mrq_utac;varchar;12;la marque;
+lib_mod_doss;varchar;20;le modele du dossier;
+lib_mod;varchar;20;le modèle commercial;
+dscom;varchar;91;la désignation commerciale;
+cnit;varchar;15;le Code National d'Identification du Type (CNIT);
+tvv;varchar;36;le Type-Variante-Version (TVV) ou le type Mines;
+cod_cbr;varchar;5;le type de carburant;
+hybride;varchar;3;une information permettant d’identifier les véhicules hybrides (O/N);
+puiss_admin_98;varnb;2;la puissance administrative;
+puiss_max;varnb;11;la puissance maximale (en kW);kW
+typ_boite_nb_rapp;varchar;3;le type de boîte de vitesse et le nombre de rapports,;
+conso_urb;varnb;11;consommation urbaine de carburant (en l/100km),;litre pour 100 km
+conso_exurb;varnb;11;consommation mixte de carburant (en l/100km),;litre pour 100 km
+conso_mixte;varnb;11;consommation extra urbaine de carburant (en l/100km),;litre pour 100 km
+co2;varnb;3;l'émission de CO2 (en g/km),;gramme par km
+co_typ_1;varnb;11;le résultat d’essai de CO type I;gramme par km
+hc;varnb;11;les résultats d’essai HC;gramme par km
+nox;varnb;11;les résultats d’essai NOx;gramme par km
+hcnox;varnb;11;les résultats d’essai HC+NOX;gramme par km
+ptcl;varnb;5;le résultat d’essai de particules ;gramme par km
+masse_ordma_min;varnb;4;la masse en ordre de marche mini;kg
+masse_ordma_max;varnb;4;la masse en ordre de marche maxi;kg
+champ_v9;varchar;23;le champ V9 du certificat d’immatriculation qui contient la norme EURO;
+date_maj;varchar;6;la date de la dernière mise à jour.;
+Carrosserie;varchar;19;Carrosserie;
+gamme;varchar;14;gamme;
