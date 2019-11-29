@@ -73,8 +73,3 @@ def lecture_fichier(nombre=None):
         else:
             nombre = min(nombre, len(table_voitures))
             return table_voitures[:nombre]
-
-if __name__ == "__main__":
-    table_voitures = lecture_fichier()
-    print(table_voitures)
-    print(f"Nombre de véhicules enregistrés: {len(table_voitures)}")
