@@ -1,2 +1,7 @@
 jupyter contrib nbextension install --user
 jupyter nbextension enable --py widgetsnbextension
+jupyter nbextension enable toc2
+jupyter nbextension enable varInspector
+jupyter nbextension enable table_beautifier
+jupyter nbextension enable go_to_current_running_cell
+jupyter nbextension enable jupyter-autopep8
