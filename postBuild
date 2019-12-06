@@ -7,3 +7,6 @@ jupyter nbextension enable table_beautifier/main
 
 jupyter nbextension install https://github.com/kenkoooo/jupyter-autopep8/archive/master.zip --user
 jupyter nbextension enable jupyter-autopep8-master/jupyter-autopep8
+
+jupyter nbextension install --overwrite --py nbtutor
+jupyter nbextension enable --py nbtutor
