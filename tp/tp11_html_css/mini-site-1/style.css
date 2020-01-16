@@ -1,0 +1,172 @@
+body {
+  background-color: lemonchiffon;
+}
+
+div#fond {
+  background-image: url(html_css_js.png);
+  background-size: 40%;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: -1; /* on veut que le fond soit... au fond */
+  opacity: 25%;
+}
+
+div#contenu {
+  background-color: white;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  border: 2px solid gold;
+  padding: 10px;
+}
+
+header {
+  background-image: linear-gradient(#ffee00, #ccaa00);
+  height: 80px;
+  display: flex;
+}
+
+header a, header h1 {
+  margin: auto;
+  color: brown;
+  text-decoration: none;
+}
+
+h1 {
+    color: brown;
+    text-align: center;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+#contenu p  {
+  text-indent: 1em;
+  text-align: justify;
+}
+
+nav {
+  display: flex;
+  background-image: linear-gradient(#ccaa00, #ffee00);
+}
+
+nav ul {
+  list-style-type: none;
+  margin: auto;
+}
+
+nav li {
+  position: relative;
+  list-style-type: none;
+  width: 150px;
+  display: inline-block;
+  padding: 10px;
+  text-align: center;
+}
+
+nav li:hover {
+  background-color: yellow;
+  border: 1px solid gold;
+}
+
+nav a {
+  text-decoration: none;
+  color: brown;
+}
+
+.boite {
+    background-color: gold;
+    border: 2px dashed brown;
+    margin: 10px;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+#b1 {
+    height: 100px;
+}
+
+#b2 {
+    float: left;
+    width: calc(30% - 20px);
+    height: 200px;
+}
+
+#b3 {
+    float: left;
+    width: calc(70% - 20px);
+    height: 200px;
+}
+
+#b4 {
+    clear: left;
+    float: left;
+    width: calc(60% - 20px);
+    height: 150px;
+}
+
+#b5 {
+    float: left;
+    clear: none;
+    width: calc(40% - 20px);
+    height: 150px;
+}
+
+#b6 {
+    height: 50px;
+}
+
+div.definition {
+    background-color: lightblue;
+    margin-left: 2em;
+    margin-right: 2em;
+    border: 2px dotted blue;
+}
+
+div.definition div.nom:first-child:before {
+    font-weight: bold;
+    content: "Définition - ";
+}
+
+div.definition div.nom:first-child {
+    position: relative;
+    width: 300px;
+    left: 30px;
+    top: -1em;
+    background-color: #eeeeff;
+    border: 2px solid blue;
+    border-radius: 10px;
+    padding: 1em;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+div.theoreme {
+    background-color: gold;
+    margin-left: 2em;
+    margin-right: 2em;
+    border: 2px dashed brown;
+    margin-top: 2em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+}
+
+div.theoreme div.nom:first-child:before {
+    font-weight: bold;
+    content: "Théorème - ";
+}
+
+div.theoreme div.nom:first-child {
+    position:relative;
+    left: -1.5em;
+    top: -1em;
+    background-color: lemonchiffon;
+    border: 2px solid brown;
+    padding: 1em;
+    margin-left: 0;
+    margin-right: auto;
+}
