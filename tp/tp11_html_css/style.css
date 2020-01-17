@@ -211,6 +211,7 @@ div#gallerie td {
 
 #gallerie img {
     width: 100%;
+    transition-timing-function: ease;
 }
 
 div#gallerie td#g1 img {
@@ -236,12 +237,12 @@ div#gallerie td#g2:hover img {
 }
 
 div#gallerie td#g3 img {
-    -webkit-transition: .3s ease-in-out !important; 
-    transition: .3s ease-in-out !important; 
+    -webkit-transition: .3s ease-in-out !important;
+    transition: .3s ease-in-out !important;
 }
 
 div#gallerie td#g3:hover img {
-    border-radius: 50%; 
+    border-radius: 50%;
 }
 
 div#gallerie td#g4 img {
@@ -260,7 +261,7 @@ div#gallerie td#g5 img {
 	  transform: rotate(10deg) scale(1.25);
 	  -webkit-transition: .3s ease-in-out;
     opacity: 0.4;
-    filter: blur(3px) grayscale(100%);
+    filter: blur(3px) grayscale(100%) brightness(40%);
 	  transition: .9s ease-in-out;
 }
 
@@ -268,7 +269,7 @@ div#gallerie td#g5:hover img {
     -webkit-transform: rotate(360deg) scale(1);
 	  transform: rotate(360deg) scale(1);
     opacity: 1.0;
-    filter: blur(0) grayscale(0);
+    filter: blur(0) grayscale(0) brightness(100%);
     border-radius: 50%;
 }
 
@@ -286,13 +287,13 @@ div#gallerie td#g6:hover img {
 
 div#gallerie td#g7 img {
     -webkit-filter: grayscale(100%);
-	  filter: grayscale(100%);
+	  filter: grayscale(100%) brightness(50%);
 	  -webkit-transition: .3s ease-in-out;
 	  transition: .3s ease-in-out;
 }
 
 div#gallerie td#g7:hover img {
-    -webkit-filter: grayscale(0);
+    -webkit-filter: grayscale(0) brightness(100%);
 	  filter: grayscale(0);
 }
 
