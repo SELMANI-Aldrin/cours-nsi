@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+	      <meta charset="utf-8" />
+	      <script type="text/javascript" src="resto.js"></script>
+	      <link rel="stylesheet" href="resto.css" />
+	      <title>Chez Carnot's</title>
+    </head>
+
+    <body onload="composeur.init()">
+
+	      <div id="composition_menu">
+		        <h1>Composez votre menu de déjeuner</h1>
+		        <hr />
+		        <p>
+			          Choisissez une entrée, un plat, un dessert et une boisson,
+			          puis appuyez sur le bouton "Prix".
+		        </p>
+		        <form id="menu_form">
+			          <table>
+				            <tr>
+					              <td>
+
+						                <table id="menus">
+							                  <tr>
+								                    <th>
+									                      Entrée&nbsp;:
+								                    </th>
+
+								                    <th>
+									                      Plat&nbsp;:
+								                    </th>
+
+								                    <th>
+									                      Dessert&nbsp;:
+								                    </th>
+
+								                    <th>
+									                      Boisson&nbsp;:
+								                    </th>
+							                  </tr>
+							                  <tr>
+								                    <td>
+									                      <select name="liste_entrees">
+										                        <option value="__choix__">Votre choix ?</option>
+									                      </select>
+								                    </td>
+
+								                    <td>
+									                      <select name="liste_plats">
+										                        <option value="__choix__">Votre choix ?</option>
+									                      </select>
+								                    </td>
+
+								                    <td>
+									                      <select name="liste_desserts">
+										                        <option value="__choix__">Votre choix ?</option>
+									                      </select>
+								                    </td>
+
+								                    <td>
+									                      <select name="liste_boissons">
+										                        <option value="__choix__">Votre choix ?</option>
+									                      </select>
+								                    </td>
+							                  </tr>
+						                </table>
+
+					              </td>
+				            </tr>
+
+				            <tr>
+					              <td>
+						                <input type="button" name="prix" id="prix" value="Prix" />
+					              </td>
+				            </tr>
+
+				            <tr>
+					              <td>
+						                <textarea id="facture" name="facture" rows="10" cols="60" readonly="readonly" disabled="disabled" />
+					              </td>
+				            </tr>
+			          </table>
+		        </form>
+	      </div>
+
+    </body>
+
+</html>

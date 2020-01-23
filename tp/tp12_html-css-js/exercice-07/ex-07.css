@@ -1,0 +1,49 @@
+body {
+    background-color: white;
+    font-family: serif;
+}
+
+form {
+  background-color: antiquewhite;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  padding: 1ex;
+}
+
+fieldset {
+  padding: 1ex;
+  background-color: ivory;
+}
+
+legend {
+  border-style: inherit;
+  border: inherit;
+  background-color: mistyrose;
+  color: blue;
+  font-style: italic;
+  padding: 3px;
+  margin-left: 1em;
+}
+
+img {
+  width: 100%;
+  border: 1px solid darksalmon;
+}
+
+.grid-container {
+  display: grid;
+  grid-gap: 2em;
+  padding: 1em;
+  grid-template-columns: 30% 1fr;
+}
+
+.grid-item {
+  display: inline-grid;
+}
+
+.resultat {
+  font-weight: bold;
+  color: violet;
+}

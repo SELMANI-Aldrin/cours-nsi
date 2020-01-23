@@ -1,0 +1,71 @@
+body {
+    background-color: silver;
+    font-family: serif;
+}
+
+#composition_menu h1 {
+    color: red;
+    text-align: center;
+    padding: 0px
+}
+
+#composition_menu hr {
+    width: 50%;
+    height: 5px;
+    background-color: red;
+    border: none;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+#composition_menu p {
+    text-align: center;
+}
+
+#menu_form table {
+    border: 2px solid blue;
+    border-collapse: collapse;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#menu_form table td {
+    padding: 1ex;
+}
+
+#menu_form table tr {
+    border: 2px solid blue;
+}
+
+table #menus {
+    border: none;
+    table-layout: fixed;
+    width: 100%;
+}
+
+table #menus tr {
+    border: none;
+}
+
+table #menus th {
+    width: 25%;
+    text-align: left;
+    padding: 5px;
+}
+
+table #menus td {
+    width: 25%;
+    text-align: left;
+    padding: 5px;
+}
+
+#menus select {
+    width: 100%;
+}
+
+#facture {
+    resize: none;
+    color: black;
+}

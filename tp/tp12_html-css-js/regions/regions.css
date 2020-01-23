@@ -1,0 +1,40 @@
+body {
+    background-color: lightyellow;
+}
+
+#choix form {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#choix table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#choix fieldset {
+  background-color: yellow;
+  border: 2px solid salmon;
+}
+
+#choix legend {
+    background-color: khaki;
+    border: 1px solid salmon;
+}
+
+#choix select {
+    width: 20em;
+}
+
+#resultat {
+    text-align: center;
+    padding: 3em;
+}
+
+#resultat .gras {
+    color: red;
+    font-weight: bold;
+    padding: 3px;
+    border: 1px solid salmon;
+}

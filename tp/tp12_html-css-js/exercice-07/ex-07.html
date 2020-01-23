@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="ex-07.js"></script>
+	<link rel="stylesheet" href="ex-07.css" />
+	<title>Exercice 7</title>
+</head>
+
+<body onload="calculateur.init()">
+
+	<div id="calculateur">
+		<form	method="get" action="" id="calc_form">
+			<fieldset>
+				<legend>
+					Calcul de l'aire d'un triangle&nbsp;:&nbsp;
+				</legend>
+
+				<div class="grid-container" id="zone-triangle">
+					<img class="item" id="img-triangle" src="triangle_abc.png" alt="Un triangle"/>
+					<div class="item" id="form-triangle">
+
+						<label for="param-a">a&nbsp;=&nbsp;</label>
+						<input style="text" name="param-a" id="param-a" /><br />
+						<label for="param-b">b&nbsp;=&nbsp;</label>
+						<input style="text" name="param-b" id="param-b" /><br />
+						<label for="param-c">c&nbsp;=&nbsp;</label>
+						<input style="text" name="param-c" id="param-c" /><br />
+						<br />
+						<input type="button" name="aire" id="aire" value="Calculer l'aire" onclick="calculateur.aire()"/>
+						<br />
+						<br />
+						<div class="resultat" id="resultat-triangle">
+						</div>
+
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset style="margin-top: 1ex">
+				<legend>
+					Calcul du volume d'une sphère&nbsp;:&nbsp;
+				</legend>
+
+				<div class="grid-container" id="zone-sphere">
+					<img class="item" id="img-sphere" src="sphere.png" alt="Une sphère" />
+					<div class="item" id="form-sphere">
+
+						<label for="param-r">r&nbsp;=&nbsp;</label>
+						<input style="text" name="param-r" id="param-r" /><br />
+						<br />
+						<input type="button" name="volume" id="volume" value="Calculer le volume" onclick="calculateur.volume()"/>
+						<br />
+						<br />
+						<div class="resultat" id="resultat-sphere">
+						</div>
+
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset style="margin-top: 1ex">
+				<legend>
+					Résolution d'équations du second degré&nbsp;:&nbsp;
+				</legend>
+
+				<div class="grid-container" id="zone-parabole">
+					<img class="item" id="img-parabole" src="parabola.png" alt="Une parabole"/>
+					<div class="item" id="form-parabole">
+						Solutions de l'équation ax<sup>2</sup> + bc + x = 0&nbsp;:
+						<br />
+						<br />
+						<label for="coeff-a">a&nbsp;=&nbsp;</label>
+						<input style="text" name="coeff-a" id="coeff-a" /><br />
+						<label for="coeff-b">b&nbsp;=&nbsp;</label>
+						<input style="text" name="coeff-b" id="coeff-b" /><br />
+						<label for="coeff-c">c&nbsp;=&nbsp;</label>
+						<input style="text" name="coeff-c" id="coeff-c" /><br />
+						<br />
+						<input type="button" name="racines" id="racines" value="Calculer les racines" onclick="calculateur.racines()"/>
+						<br />
+						<br />
+						<div class="resultat" id="resultat-parabole" style="height: 5em">
+						</div>
+
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+</body>
+
+</html>

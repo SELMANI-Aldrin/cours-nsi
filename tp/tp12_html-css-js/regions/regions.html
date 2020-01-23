@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8" />
+	<script type="text/javascript" src="regions.js"></script>
+	<link rel="stylesheet" href="regions.css" />
+	<title>Choix d'un département français</title>
+</head>
+
+<body onload="init()">
+
+	<h1></h1>
+
+	<div id="choix">
+		<form id="residence">
+			<fieldset>
+				<legend>Lieu de résidence&nbsp;:&nbsp;</legend>
+				<table>
+					<tr>
+						<td style="text-align: right">
+							<label for="regions">
+								Région&nbsp;:&nbsp;
+							</label>
+						</td>
+						<td style="text-align: left">
+							<select name="regions" id="regions" onchange="nouvelleRegion();">
+								<option value="__choix__">
+									&lt;Faites un choix&gt;
+								</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: right">
+							<label for="departements">
+								Département&nbsp;:&nbsp;
+							</label>
+						</td>
+						<td style="text-align: left">
+							<select name="departements" id="departements" onchange="nouveauDepartement();">
+								<option value="__choix__">
+									&lt;Faites un choix&gt;
+								</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+	</div>
+
+	<div id="resultat">
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+	      <meta charset=UTF-8" />
+	      <script type="text/javascript" src="sport.js"></script>
+	      <link rel="stylesheet" href="sport.css" />
+	      <title>Cotisation sportive</title>
+    </head>
+
+    <body onload="initialiseFormulaires();">
+
+	      <h2>Merci de payer la (ou les) cotisation(s), selon le(s) sport(s) sélectionné(s):</h2>
+
+	      <div id="formulaires">
+		        <form id="sport-form">
+				        <input type="checkbox" name="handball" id="handball" />
+				        <label for="handball">Handball</label> <br />
+				        <input type="checkbox" name="football" id="football" />
+				        <label for="football">Football</label> <br />
+				        <input type="checkbox" name="baseball" id="baseball" />
+				        <label for="baseball">Baseball</label> <br />
+				        <input type="checkbox" name="basketball" id="basketball" />
+				        <label for="basketball">Basket-ball</label>
+		        </form>
+
+		        <hr/>
+
+		        <form id="payment-form">
+				        <input type="radio" name="payment" value="cb" id="cb" />
+				        <label for="cb">CB</label>
+				        <span style="padding-left: 5em;"></span>
+				        <label for="code">Votre code: </label>
+				        <input type="text" name="code" id="code" style="width: 4em;"/> <br />
+				        <input type="radio" name="payment" value="cheque" id="cheque" />
+				        <label for="cheque">Chèque</label> <br />
+				        <input type="radio" name="payment" value="liquide" id="liquide" />
+				        <label for="liquide">Liquide</label> <br />
+				        <br />
+				        <input type="button" value="Valider" onclick="validePaiement();" />
+				        <input type="button" value="Effacer" onclick="initialiseFormulaires();" />
+		        </form>
+	      </div>
+
+	      <div id="resultat">
+	      </div>
+
+    </body>
+
+</html>
