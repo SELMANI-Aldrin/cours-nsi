@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="morpion.css" />
+        <script type="text/javascript" src="morpion.js"></script>
+        <title>Morpion</title>
+    </head>
+
+    <body onload="initialisation()">
+        <header>
+            <h1>Morpion</h1>
+        </header>
+
+        <div id="info">
+            <div id="joueur">
+                <p>Joueur courant:</p>
+                <div id="courant"></div>
+            </div>
+        </div>
+
+        <div id="jeu">
+            <div id="plateau">
+                <table>
+                    <tr>
+                        <td class="case" id="11"></td>
+                        <td class="case" id="12"></td>
+                        <td class="case" id="13"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="case" id="21"></td>
+                        <td class="case" id="22"></td>
+                        <td class="case" id="23"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="case" id="31"></td>
+                        <td class="case" id="32"></td>
+                        <td class="case" id="33"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="commandes">
+            <input type="button" value="Recommencer" onclick="recommenceJeu()"/>
+        </div>
+
+        <footer>
+            <div id="copyright">&copy; janvier 2020 par Grossé Pascal</div>
+        </footer>
+    </body>
+</html>

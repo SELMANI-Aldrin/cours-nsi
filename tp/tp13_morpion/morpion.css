@@ -1,0 +1,74 @@
+header {
+    display: flex;
+    background-color: lightgray;
+    padding: 20px;
+}
+
+header h1 {
+    margin: auto;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+#jeu {
+    display:flex;
+}
+
+#plateau {
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+#plateau table {
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+#plateau td {
+    border: 1px dashed black;
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    font-size: 100px;
+    font-weight: bold;
+    user-select: none;
+}
+
+#info {
+    float: right;
+    display: flex;
+    background-color: lightgray;
+    padding: 10px;
+    border: 2px solid black;
+    margin-top: 50px;
+    margin-right: 20px;
+}
+
+#courant {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+#commandes {
+    display: flex;
+}
+
+#commandes input {
+    margin: auto;
+    font-size: 24px;
+}
+
+footer {
+    display: flex;
+    background-color: lightgray;
+    width: 100%;
+    padding: 10px;
+    margin-top: 50px;
+}
+
+#copyright {
+    margin: auto;
+    color: gray;
+}
