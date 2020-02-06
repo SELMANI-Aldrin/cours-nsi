@@ -97,7 +97,6 @@ var cliqueCase = function(coord) {
             if (!victoire) {
                 prochainJoueur();
             } else {
-                afficheVictoire();
                 termine = true;
             }
         }
@@ -116,9 +115,22 @@ var testeVictoire = function() {
                 (valeurCase(coord) == 2 && joueurCourant == "O")) {
                 n = n + 1;
             }
-            if (n == 3) {
-                return true;
+        }
+        if (n == 3) {
+            for (var c in alignements[a]) {
+                var coord = alignements[a][c];
+                var cellule = cases[coord];
+                switch (joueurCourant) {
+                case "X":
+                    cellule.style.backgroundColor = "#aaaaff";
+                    break
+                case "O":
+                    cellule.style.backgroundColor = "#ffaaaa";
+                    break;
+                }
             }
+            afficheVictoire();
+            return true;
         }
     }
     return false;
@@ -216,12 +228,10 @@ var marqueCase = function(coord, valeur) {
             case 1:
                 c.innerHTML = "X";
                 c.style.color = "blue";
-                c.style.backgroundColor = "#aaaaff";
                 break;
             case 2:
                 c.innerHTML = "O";
                 c.style.color = "red";
-                c.style.backgroundColor = "#ffaaaa";
                 break;
         }
     }
