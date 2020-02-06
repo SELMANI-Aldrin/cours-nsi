@@ -2,12 +2,31 @@
 // représente le numéro de ligne, le chiffre des unités le numéro de colonne.
 var coordonnees = [11, 12, 13, 21, 22, 23, 31, 32, 33]
 
+// Un tableau contenant tous les alignements de trois cases (utilisé pour
+// tester une position gagnante).
+var alignements = [
+    // horizontales
+    [11, 12, 13],
+    [21, 22, 23],
+    [31, 32, 33],
+    // verticales
+    [11, 21, 31],
+    [12, 22, 32],
+    [13, 23, 33],
+    // diagonales,
+    [11, 22, 33],
+    [13, 22, 31]
+]
+
 // Un dictionnaire associant à chaque coordonnée de case l'élément <td> html
 // correspondant.
 var cases = {}
 
 // A qui est-ce le tour de jouer ? Peut valoir "X" ou "O"
 var joueurCourant = "X";
+
+// Le jeu est-il terminé
+var termine = false;
 
 // Change le joueur courant. Alterne entre "O" et "X"
 var prochainJoueur = function() {
@@ -20,6 +39,28 @@ var prochainJoueur = function() {
             break;
     }
     afficheJoueurCourant();
+}
+
+// Affiche le fait que le joueur courant a gagné la partie
+var afficheVictoire = function() {
+    var victoire = document.getElementById("victoire-fond");
+    victoire.style.display = "block";
+    var joueur = document.getElementById("victoire-joueur");
+    joueur.innerHTML = joueurCourant;
+    switch (joueurCourant) {
+        case "X":
+            joueur.style.color = "blue";
+            break;
+        case "O":
+            joueur.style.color = "red";
+            break;
+    }
+
+    window.onclick = function(event) {
+        if (event.target == victoire) {
+            victoire.style.display = "none";
+        }
+    }
 }
 
 // On veut une fonction qui sera appelée lors d'un clique sur une des cases du
@@ -35,28 +76,52 @@ var prochainJoueur = function() {
 //
 // Concrètement, le programme créera 9 fonctions callback différentes, avec chacunes
 // des 9 coordonnées du plateau de jeu.
-var cliqueCase= function(coord) {
+var cliqueCase = function(coord) {
     var callback = function() {
         // On affiche un message d'information dans la console
         console.log("Click sur la case:", coord);
 
-        if (valeurCase(coord) == 0) {
+        if (valeurCase(coord) == 0 && !termine) {
             // On ne peut jouer que sur une case vide
 
             switch (joueurCourant) {
                 case "X":
                     marqueCase(coord, 1);
-                    prochainJoueur();
                     break;
                 case "O":
                     marqueCase(coord, 2);
-                    prochainJoueur();
                     break;
+            }
+
+            var victoire = testeVictoire();
+            if (!victoire) {
+                prochainJoueur();
+            } else {
+                afficheVictoire();
+                termine = true;
             }
         }
     }
 
     return callback;
+}
+
+// On teste si la position courante est une victoire pour le joueur courant.
+var testeVictoire = function() {
+    for (var a in alignements) {
+        var n = 0;
+        for (var c in alignements[a]) {
+            var coord = alignements[a][c];
+            if ((valeurCase(coord) == 1 && joueurCourant == "X") ||
+                (valeurCase(coord) == 2 && joueurCourant == "O")) {
+                n = n + 1;
+            }
+            if (n == 3) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 var effacePlateau = function() {
@@ -72,6 +137,7 @@ var recommenceJeu = function() {
     effacePlateau();
     joueurCourant = "X";
     afficheJoueurCourant();
+    termine = false;
 }
 
 // Remplit le dictionnaire cases en recherchant l'élément html correspondant.
@@ -145,17 +211,17 @@ var marqueCase = function(coord, valeur) {
         switch (valeur) {
             case 0:
                 c.innerHTML = "";
-                c.style.backgroundColor = "#FFFFFF";
+                c.style.backgroundColor = "#ffffff";
                 break
             case 1:
                 c.innerHTML = "X";
                 c.style.color = "blue";
-                c.style.backgroundColor = "#DDDDFF";
+                c.style.backgroundColor = "#aaaaff";
                 break;
             case 2:
                 c.innerHTML = "O";
                 c.style.color = "red";
-                c.style.backgroundColor = "#FFDDDD";
+                c.style.backgroundColor = "#ffaaaa";
                 break;
         }
     }
