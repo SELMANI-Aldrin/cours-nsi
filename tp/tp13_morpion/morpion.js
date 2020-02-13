@@ -28,16 +28,19 @@ var joueurCourant = "X";
 // Le jeu est-il terminé
 var termine = false;
 
+// Quel est l'adversaire. Renvoie "X" si le joueur est "O", et inversement.
+var adversaire = function(joueur) {
+    switch (joueur) {
+        case "X":
+            return "O";
+        case "O":
+            return "X";
+    }
+}
+
 // Change le joueur courant. Alterne entre "O" et "X"
 var prochainJoueur = function() {
-    switch (joueurCourant) {
-        case "X":
-            joueurCourant = "O";
-            break;
-        case "O":
-            joueurCourant = "X";
-            break;
-    }
+    joueurCourant = adversaire(joueurCourant);
     afficheJoueurCourant();
 }
 
@@ -81,17 +84,11 @@ var cliqueCase = function(coord) {
         // On affiche un message d'information dans la console
         console.log("Click sur la case:", coord);
 
-        if (valeurCase(coord) == 0 && !termine) {
-            // On ne peut jouer que sur une case vide
+        if (valeurCase(coord) == "" && !termine) {
+            // On ne peut jouer que sur une case vide et si le jeu n'est pas
+            // déjà terminé
 
-            switch (joueurCourant) {
-                case "X":
-                    marqueCase(coord, 1);
-                    break;
-                case "O":
-                    marqueCase(coord, 2);
-                    break;
-            }
+            marqueCase(coord, joueurCourant);
 
             var victoire = testeVictoire();
             if (!victoire) {
@@ -111,12 +108,15 @@ var testeVictoire = function() {
         var n = 0;
         for (var c in alignements[a]) {
             var coord = alignements[a][c];
-            if ((valeurCase(coord) == 1 && joueurCourant == "X") ||
-                (valeurCase(coord) == 2 && joueurCourant == "O")) {
+            if (valeurCase(coord) == joueurCourant) {
                 n = n + 1;
             }
         }
+
+        // A-t-on un alignement de 3 cases ?
         if (n == 3) {
+
+            // Oui : on marque cet alignement dans la grille
             for (var c in alignements[a]) {
                 var coord = alignements[a][c];
                 var cellule = cases[coord];
@@ -129,6 +129,8 @@ var testeVictoire = function() {
                     break;
                 }
             }
+
+            // puis on affiche le message de victoire
             afficheVictoire();
             return true;
         }
@@ -139,7 +141,7 @@ var testeVictoire = function() {
 var effacePlateau = function() {
     for (var i in coordonnees) {
         var coord = coordonnees[i];
-        marqueCase(coord, 0);
+        marqueCase(coord, "");
     }
 
     joueurCourant = "X";
@@ -188,31 +190,24 @@ var initialisation = function () {
 }
 
 // Renvoie 0 si la case dont la coordonnée est fournie en paramètre est vide,
-// 1 si son contenu est "X", 2 si c'est "O". En cas d'erreur, renvoie -1.
+// 1 si son contenu est "X", 2 si c'est "O". En cas d'erreur, renvoie undefined.
 var valeurCase = function(coord) {
     var c = cases[coord];
 
     // On s'assure que la coordonnée était valide (si elle est présente dans les
     // clés du dictionnaire).
     if (c != undefined) {
-        switch (c.innerHTML) {
-            case "":
-                return 0;
-            case "X":
-                return 1;
-            case "O":
-                return 2;
-        }
+        return c.innerHTML;
     }
 
     // Si on arrive à ce point, c'est qu'il y a eu une erreur: coordonnée incorrecte ou bien
     // contenu de case incorrect. On renvoie un code d'erreur.
-    return -1
+    return undefined
 }
 
 var marqueCase = function(coord, valeur) {
     // Place une marque dans la case de coordonnée 'coord'.
-    // Valeur peut valoir 0 (case vide), 1 (case X) ou 2 (case O).
+    // Valeur peut valoir "" (case vide), "X" ou "O".
 
     // Ne fait rien s'il y a une erreur (coordonnée fausse ou valeur incorrecte).
 
@@ -220,19 +215,131 @@ var marqueCase = function(coord, valeur) {
 
     var c = cases[coord];
     if (c != undefined) {
+        c.innerHTML = valeur;
         switch (valeur) {
-            case 0:
+            case "":
                 c.innerHTML = "";
                 c.style.backgroundColor = "#ffffff";
                 break
-            case 1:
+            case "X":
                 c.innerHTML = "X";
                 c.style.color = "blue";
                 break;
-            case 2:
+            case "O":
                 c.innerHTML = "O";
                 c.style.color = "red";
                 break;
         }
+    }
+}
+
+// Renvoie un dictionnaire où on associe à chaque case de la grille sa valeur.
+// Utile pour travailler sur une position donnée (calculer un score, programmer
+// une IA) sans avoir à accéder au html.
+//
+// Attention, ce dictionnaire est totalement découplé du html: on peut s'en
+// servir pour travailler ou modifier une position en mémoire, mais pas pour
+// changer le terrain affiché.
+//
+// L'autre grand avantage: on peut créer de nouvelles positions sans modifier
+// le html, ce qui est indispensable pour prévoir plusieurs coups à l'avance
+// dans une IA.
+var positionCourante = function() {
+    var dico = {}
+    for (var c in coordonnees) {
+        var coord = coordonnees[c];
+        dico[coord] = valeurCase(coord);
+    }
+    return dico;
+}
+
+// Renvoie une copie d'une position. Très utile pour analyser l'effet d'un coup
+// potentiel dans une IA.
+var dupliquePosition = function(position) {
+    var copie = {};
+    for (var c in position) {
+        copie[c] = position[c];
+    }
+    return copie;
+}
+
+// Calcule un score pour une position, par rapport au joueur X.
+// L'algorithme fonctionne en parcourant tous les alignements de cases.
+// Ensuite:
+// - Un alignement de 3 valeurs identiques renvoie un score de 100 pour X,
+//   -100 pour O.
+//
+// En dehors des alignements victorieux, on ajoute les scores partiels:
+// - Un alignement de 2 valeurs identiques + une case vide rapporte 10 pour X,
+//   -10 pour O.
+// - Une seule case marquée rapport 1 pour X, -1 pour O.
+var calculeScorePosition = function(position) {
+    var score = 0;
+    for (var a in alignements) {
+        var nX = 0;
+        var nO = 0;
+        for (c in alignements[a]) {
+            var coord = alignements[a][c];
+            switch (position[coord]) {
+                case "X":
+                    nX += 1;
+                    break;
+                case "O":
+                    nO += 1
+                    break;
+            }
+        }
+
+        if (nX == 3) {
+            return 100;
+        } else if (nO == 3) {
+            return -100;
+        } else if (nX == 2 && nO == 0) {
+            score += 10;
+        } else if (nO == 2 && nX == 0) {
+            score -= 10;
+        } else if (nX == 1 && nO == 0) {
+            score += 1;
+        } else if (nO == 1 && nX == 0) {
+            score -= 1;
+        }
+    }
+    return score;
+}
+
+var minimax = function(position, joueur) {
+    var score = calculeScorePosition(position);
+    if (joueur == "O") {
+        // Le score est calculé par rapport au joueur "X": on prend l'opposé
+        // si le joueur est "O".
+        score = score;
+    }
+
+    // Est-ce une position victorieuse ?
+    if (score == 100 || score == -100) {
+        return score;
+    }
+
+
+
+    // Si non, on calcule le score en utilisant l'algorithme minimax.
+    score = -200;
+    var coup = -1;
+    for (var coord in position) {
+        if (position[coord] == "") {
+            var copie = dupliquePosition(position);
+            copie[coord] = joueur;
+            var nouveauScore = -minimax(copie, adversaire(joueur));
+            if (nouveauScore > score) {
+                score = nouveauScore;
+                coup = coord;
+            }
+        }
+    }
+
+    if (coup == -1) {
+        return 0; // Aucun coup valide, c'est un match nul.
+    } else {
+        return score;
     }
 }
