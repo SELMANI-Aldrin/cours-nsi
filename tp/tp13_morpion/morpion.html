@@ -17,6 +17,10 @@
                 <p>Joueur courant:</p>
                 <div id="courant"></div>
             </div>
+
+            <div id="reflexion">
+                Je réfléchis...
+            </div>
         </div>
 
         <div id="jeu">
@@ -44,7 +48,10 @@
         </div>
 
         <div id="commandes">
-            <input type="button" value="Recommencer" onclick="recommenceJeu()"/>
+            <div id="bouttons">
+                <input type="button" value="Recommencer" onclick="recommenceJeu()"/>
+                <input id="passer" type="button" value="Passer le premier tour" onclick="passerPremierTour()"/>
+            </div>
         </div>
 
         <div id="victoire-fond">

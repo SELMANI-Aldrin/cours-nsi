@@ -66,40 +66,87 @@ var afficheVictoire = function() {
     }
 }
 
-// On veut une fonction qui sera appelée lors d'un clique sur une des cases du
-// plateau de jeu. Il y a cependant un problème: on doit fournir une coordonnée
-// pour indiquer la case cliquée, mais la fonction associée à 'onclick' ne peut avoir
-// aucun paramètre.
-//
-// Solution (un peu compliquée, mais on n'a pas le choix en javascript): la fonction
-// cliqueCase prend un paramètre coord, et renvoie une fonction sans paramètre qui,
-// elle, sera associée à 'onclick'. Une telle fonction s'appelle traditionnellement une
-// fonction callback en informatique. Chaque fonction callback ainsi créée se souviendra
-// de la valeur de coord au moment de sa création.
-//
-// Concrètement, le programme créera 9 fonctions callback différentes, avec chacunes
-// des 9 coordonnées du plateau de jeu.
-var cliqueCase = function(coord) {
-    var callback = function() {
-        // On affiche un message d'information dans la console
-        console.log("Click sur la case:", coord);
+// La fonction associée au click sur chacune des 9 cases de la grille
+var cliqueCase = function(event) {
+    // On commence par griser le boutton qui permet de passer le premier tour:
+    var passerBoutton = document.getElementById("passer");
+    passerBoutton.disabled = true;
 
-        if (valeurCase(coord) == "" && !termine) {
-            // On ne peut jouer que sur une case vide et si le jeu n'est pas
-            // déjà terminé
+    // On récupère l'id de la case cliquée, qui correspond aussi à la coordonnée de la
+    // case dans la grille
+    coord = event.target.id;
+    console.log("Click sur la case:", coord);
 
-            marqueCase(coord, joueurCourant);
+    if (valeurCase(coord) == "" && !termine) {
+        // On ne peut jouer que sur une case vide et si le jeu n'est pas
+        // déjà terminé
 
-            var victoire = testeVictoire();
-            if (!victoire) {
-                prochainJoueur();
-            } else {
-                termine = true;
-            }
+        marqueCase(coord, joueurCourant);
+
+        var victoire = testeVictoire();
+        if (!victoire) {
+            prochainJoueur();
+            // Si on est dans cliqueCase, c'est que le coup a été joué par le joueur.
+            // Le prochain le sera forcément par l'ordinateur
+
+            // On appelle la fonction coupOrdinateur après 100 millisecondes, afin de laisser
+            // au navigateur le temps d'afficher le coup courant (sinon on pourrait penser
+            // qu'il est figé). C'est le rôle de la fonction setTimeout, qui permet d'appeler une
+            // autre fonction après un certain laps de temps.
+            setTimeout(coupOrdinateur, 100);
+        } else {
+            termine = true;
         }
     }
+}
 
-    return callback;
+// Permet de laisser l'ordinateur jouer le premier tour
+var passerPremierTour = function() {
+    // On commence par griser le boutton qui permet de passer le premier tour:
+    var passerBoutton = document.getElementById("passer");
+    passerBoutton.disabled = true;
+
+    // On appelle la fonction coupOrdinateur après 100 millisecondes, afin de laisser
+    // au navigateur le temps d'afficher le coup courant (sinon on pourrait penser
+    // qu'il est figé).
+    setTimeout(coupOrdinateur, 100);
+}
+
+// On demande à l'ordinateur de jouer le prochain coup
+var coupOrdinateur = function() {
+    console.log("Je réfléchis...");
+    // On affiche temporairement le message "je réfléchis..."
+    var reflexion = document.getElementById("reflexion");
+    reflexion.style.opacity = 1;
+
+    // on laisse passer une centaine de millisecondes avant de continuer le calcul
+    // du meilleur coup, sinon le navigateur ne peut pas mettre à jour l'affichage
+    // avant la fin de la réflexion (qui peut être longue).
+    setTimeout(suiteCoupOrdinateur, 100);
+}
+
+// La suite de la fonction précédente: normalement, le navigateur a eu le temps
+// de mettre à jour son affichage (message "je réfléchis...") avant de l'appeler.
+var suiteCoupOrdinateur = function() {
+    // On utilise une recherche avec 8 coups à l'avance. C'est un peu long pour le premier
+    // coup (le meilleur est dans un coin), mais c'est optimal pour une grille 9x9.
+    var coup = negamax(positionCourante(), joueurCourant, 0, 8);
+
+    // On efface le message "je réfléchis..."
+    var reflexion = document.getElementById("reflexion");
+    reflexion.style.opacity = 0;
+
+    console.log("Je joue en " + coup);
+    marqueCase(coup, joueurCourant);
+
+    var victoire = testeVictoire();
+    if (!victoire) {
+        prochainJoueur();
+        // Contrairement à ce qui se passe pour cliqueCase, le prochain coup sera joué par
+        // l'humain: il n'y a donc rien à faire ici, on attend le click du joueur.
+    } else {
+        termine = true;
+    }
 }
 
 // On teste si la position courante est une victoire pour le joueur courant.
@@ -162,7 +209,7 @@ var initialiseCases = function() {
 
         // On lie l'événement 'onclick' sur cette case de la table à la fonction
         // correspondante:
-        cases[coord].onclick = cliqueCase(coord);
+        cases[coord].onclick = cliqueCase;
     }
 
 }
@@ -187,6 +234,8 @@ var afficheJoueurCourant = function() {
 var initialisation = function () {
     initialiseCases();
     afficheJoueurCourant();
+    var passerBoutton = document.getElementById("passer");
+    passerBoutton.disabled = false;
 }
 
 // Renvoie 0 si la case dont la coordonnée est fournie en paramètre est vide,
@@ -291,9 +340,9 @@ var calculeScorePosition = function(position) {
         }
 
         if (nX == 3) {
-            return 100;
+            score += 100;
         } else if (nO == 3) {
-            return -100;
+            score -= 100;
         } else if (nX == 2 && nO == 0) {
             score += 10;
         } else if (nO == 2 && nX == 0) {
@@ -307,39 +356,76 @@ var calculeScorePosition = function(position) {
     return score;
 }
 
-var minimax = function(position, joueur) {
-    var score = calculeScorePosition(position);
-    if (joueur == "O") {
-        // Le score est calculé par rapport au joueur "X": on prend l'opposé
-        // si le joueur est "O".
-        score = score;
-    }
-
-    // Est-ce une position victorieuse ?
-    if (score == 100 || score == -100) {
-        return score;
-    }
-
-
-
-    // Si non, on calcule le score en utilisant l'algorithme minimax.
-    score = -200;
-    var coup = -1;
+// Le terrain est-il entièrement rempli (probablement un match nul, sauf alignement de
+// 3 pions)
+var positionPleine = function(position) {
     for (var coord in position) {
         if (position[coord] == "") {
-            var copie = dupliquePosition(position);
-            copie[coord] = joueur;
-            var nouveauScore = -minimax(copie, adversaire(joueur));
-            if (nouveauScore > score) {
-                score = nouveauScore;
-                coup = coord;
+            return false;
+        }
+    }
+    return true;
+}
+
+// A-t-on une position terminale ? C'est le cas si on a au moins un alignement de 3 pions,
+// ou bien en cas de match nul.
+var positionTerminale = function(position) {
+    if (positionPleine(position)) {
+        return true;
+    } else {
+        // A-t-on des alignements de 3 pions identiques ?
+        for (var a in alignements) {
+            var nX = 0;
+            var nO = 0;
+            for (var c in alignements[a]) {
+                var coord = alignements[a][c];
+                switch (position[coord]) {
+                    case "X":
+                        nX += 1;
+                        break;
+                    case "O":
+                        nO += 1;
+                        break;
+                }
+                if (nX == 3 || nO == 3) {
+                    return true;
+                }
             }
         }
     }
+    return false;
+}
 
-    if (coup == -1) {
-        return 0; // Aucun coup valide, c'est un match nul.
+// On recherche le meilleur coup en utilisant l'algorithme minimax (ou plutôt,
+// sa variante negamax) décrit sur la page wikipedia correspondante:
+// https://fr.wikipedia.org/wiki/Algorithme_minimax
+var negamax = function(position, joueur, profondeur, profondeur_max) {
+    if (profondeur == profondeur_max || positionTerminale(position)) {
+        if (joueur == "X") {
+            return calculeScorePosition(position);
+        } else {
+            return -calculeScorePosition(position);
+        }
     } else {
-        return score;
+        // Si non, on calcule le score en utilisant l'algorithme minimax.
+        var score = -100000;
+        var coup = -1;
+        for (var coord in position) {
+            if (position[coord] == "") {
+                var copie = dupliquePosition(position);
+                copie[coord] = joueur;
+                var nouveauScore = -negamax(copie, adversaire(joueur), profondeur + 1, profondeur_max);
+                if (nouveauScore > score) {
+                    score = nouveauScore;
+                    coup = coord;
+                }
+            }
+        }
+
+        if (profondeur == 0) {
+            return coup;
+        } else {
+            return score;
+        }
     }
 }
