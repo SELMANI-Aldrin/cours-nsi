@@ -130,7 +130,7 @@ var coupOrdinateur = function() {
 var suiteCoupOrdinateur = function() {
     // On utilise une recherche avec 8 coups à l'avance. C'est un peu long pour le premier
     // coup (le meilleur est dans un coin), mais c'est optimal pour une grille 9x9.
-    var coup = negamax(positionCourante(), joueurCourant, 0, 8);
+    var coup = negamaxAlphaBeta(positionCourante(), joueurCourant, -1000000, 100000, 0, 8);
 
     // On efface le message "je réfléchis..."
     var reflexion = document.getElementById("reflexion");
@@ -418,6 +418,46 @@ var negamax = function(position, joueur, profondeur, profondeur_max) {
                 if (nouveauScore > score) {
                     score = nouveauScore;
                     coup = coord;
+                }
+            }
+        }
+
+        if (profondeur == 0) {
+            return coup;
+        } else {
+            return score;
+        }
+    }
+}
+
+// Une amélioration de la fonction précédente, *beaucoup* plus rapide. On utilise directement
+// l'algorithme trouvé ici:
+//
+// https://en.wikipedia.org/wiki/Negamax#Negamax_with_alpha_beta_pruning
+//
+var negamaxAlphaBeta = function(position, joueur, alpha, beta, profondeur, profondeur_max) {
+    if (profondeur == profondeur_max || positionTerminale(position)) {
+        if (joueur == "X") {
+            return calculeScorePosition(position);
+        } else {
+            return -calculeScorePosition(position);
+        }
+    } else {
+        // Si non, on calcule le score en utilisant l'algorithme minimax.
+        var score = -100000;
+        var coup = -1;
+        for (var coord in position) {
+            if (position[coord] == "") {
+                var copie = dupliquePosition(position);
+                copie[coord] = joueur;
+                var nouveauScore = -negamaxAlphaBeta(copie, adversaire(joueur), -beta, -alpha, profondeur + 1, profondeur_max);
+                if (nouveauScore > score) {
+                    score = nouveauScore;
+                    coup = coord;
+                }
+                alpha = Math.max(alpha, score);
+                if (alpha >= beta) {
+                    break;
                 }
             }
         }
