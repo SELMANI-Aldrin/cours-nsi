@@ -199,6 +199,8 @@ var recommenceJeu = function() {
     joueurCourant = "X";
     afficheJoueurCourant();
     termine = false;
+    var passerBoutton = document.getElementById("passer");
+    passerBoutton.disabled = false;
 }
 
 // Remplit le dictionnaire cases en recherchant l'élément html correspondant.
