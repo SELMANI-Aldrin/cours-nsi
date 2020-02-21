@@ -130,7 +130,7 @@ var coupOrdinateur = function() {
 var suiteCoupOrdinateur = function() {
     // On utilise une recherche avec 8 coups à l'avance. C'est un peu long pour le premier
     // coup (le meilleur est dans un coin), mais c'est optimal pour une grille 9x9.
-    var coup = negamaxAlphaBeta(positionCourante(), joueurCourant, -1000000, 100000, 0, 8);
+    var coup = negamaxAlphaBeta(positionCourante(), joueurCourant, -100000, 100000, 0, 8);
 
     // On efface le message "je réfléchis..."
     var reflexion = document.getElementById("reflexion");
@@ -342,13 +342,13 @@ var calculeScorePosition = function(position) {
         }
 
         if (nX == 3) {
-            score += 100;
+            score += 10000;
         } else if (nO == 3) {
-            score -= 100;
+            score -= 10000;
         } else if (nX == 2 && nO == 0) {
-            score += 10;
+            score += 100;
         } else if (nO == 2 && nX == 0) {
-            score -= 10;
+            score -= 100;
         } else if (nX == 1 && nO == 0) {
             score += 1;
         } else if (nO == 1 && nX == 0) {
@@ -402,11 +402,15 @@ var positionTerminale = function(position) {
 // sa variante negamax) décrit sur la page wikipedia correspondante:
 // https://fr.wikipedia.org/wiki/Algorithme_minimax
 var negamax = function(position, joueur, profondeur, profondeur_max) {
+    // Les Math.pow(2, -profondeur) servent à donner un poids de plus en plus
+    // faible aux coups suivants, afin que les victoires plus proches soient
+    // privilégiées.
+
     if (profondeur == profondeur_max || positionTerminale(position)) {
         if (joueur == "X") {
-            return calculeScorePosition(position);
+            return Math.pow(2, -profondeur)*calculeScorePosition(position);
         } else {
-            return -calculeScorePosition(position);
+            return -Math.pow(2, -profondeur)*calculeScorePosition(position);
         }
     } else {
         // Si non, on calcule le score en utilisant l'algorithme minimax.
@@ -416,7 +420,10 @@ var negamax = function(position, joueur, profondeur, profondeur_max) {
             if (position[coord] == "") {
                 var copie = dupliquePosition(position);
                 copie[coord] = joueur;
-                var nouveauScore = -negamax(copie, adversaire(joueur), profondeur + 1, profondeur_max);
+                var nouveauScore = -Math.pow(2, -profondeur)*negamax(copie, adversaire(joueur), profondeur + 1, profondeur_max);
+                if (profondeur == 0) {
+                    console.log(coord + " " + nouveauScore);
+                }
                 if (nouveauScore > score) {
                     score = nouveauScore;
                     coup = coord;
@@ -440,9 +447,9 @@ var negamax = function(position, joueur, profondeur, profondeur_max) {
 var negamaxAlphaBeta = function(position, joueur, alpha, beta, profondeur, profondeur_max) {
     if (profondeur == profondeur_max || positionTerminale(position)) {
         if (joueur == "X") {
-            return calculeScorePosition(position);
+            return Math.pow(2, -profondeur)*calculeScorePosition(position);
         } else {
-            return -calculeScorePosition(position);
+            return -Math.pow(2, -profondeur)*calculeScorePosition(position);
         }
     } else {
         // Si non, on calcule le score en utilisant l'algorithme minimax.
@@ -452,7 +459,7 @@ var negamaxAlphaBeta = function(position, joueur, alpha, beta, profondeur, profo
             if (position[coord] == "") {
                 var copie = dupliquePosition(position);
                 copie[coord] = joueur;
-                var nouveauScore = -negamaxAlphaBeta(copie, adversaire(joueur), -beta, -alpha, profondeur + 1, profondeur_max);
+                var nouveauScore = -Math.pow(2, -profondeur)*negamaxAlphaBeta(copie, adversaire(joueur), -beta, -alpha, profondeur + 1, profondeur_max);
                 if (nouveauScore > score) {
                     score = nouveauScore;
                     coup = coord;
