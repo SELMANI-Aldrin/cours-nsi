@@ -28,6 +28,9 @@ var joueurCourant = "X";
 // Le jeu est-il terminé
 var termine = false;
 
+// Est-ce au tour du joueur humain ?
+var tourJoueur = true;
+
 // Quel est l'adversaire. Renvoie "X" si le joueur est "O", et inversement.
 var adversaire = function(joueur) {
     switch (joueur) {
@@ -66,36 +69,57 @@ var afficheVictoire = function() {
     }
 }
 
+// Cette fonction est appelée dès lors que la souris entre ou sort d'une case. On change
+// dynamiquement la couleur du fond, mais uniquement si c'est au tour du joueur humain.
+var survoleCase = function(event) {
+    var cellule = event.target;
+    if (event.type == "mouseenter" && tourJoueur) {
+        // On ne change rien pour les cases déjà occupées.
+        if (cellule.innerHTML == "") {
+            cellule.style.backgroundColor = "lemonChiffon";
+        }
+    } else {
+        // On annule le changement de couleur même si ce n'est pas le tour du joueur:
+        // cela permet d'éviter qu'une case reste en sur-brillance juste parce que l'ordinateur
+        // réfléchit.
+        cellule.style.backgroundColor = "";
+    }
+}
+
 // La fonction associée au click sur chacune des 9 cases de la grille
 var cliqueCase = function(event) {
-    // On commence par griser le boutton qui permet de passer le premier tour:
-    var passerBoutton = document.getElementById("passer");
-    passerBoutton.disabled = true;
+    // On n'accepte le click que si c'est au tour du joueur humain
+    if (tourJoueur) {
+        // On commence par griser le boutton qui permet de passer le premier tour:
+        var passerBoutton = document.getElementById("passer");
+        passerBoutton.disabled = true;
 
-    // On récupère l'id de la case cliquée, qui correspond aussi à la coordonnée de la
-    // case dans la grille
-    coord = event.target.id;
-    console.log("Click sur la case:", coord);
+        // On récupère l'id de la case cliquée, qui correspond aussi à la coordonnée de la
+        // case dans la grille
+        var coord = event.target.id;
+        console.log("Click sur la case:", coord);
 
-    if (valeurCase(coord) == "" && !termine) {
-        // On ne peut jouer que sur une case vide et si le jeu n'est pas
-        // déjà terminé
+        if (valeurCase(coord) == "" && !termine) {
+            // On ne peut jouer que sur une case vide et si le jeu n'est pas
+            // déjà terminé
 
-        marqueCase(coord, joueurCourant);
+            marqueCase(coord, joueurCourant);
 
-        var victoire = testeVictoire();
-        if (!victoire) {
-            prochainJoueur();
-            // Si on est dans cliqueCase, c'est que le coup a été joué par le joueur.
-            // Le prochain le sera forcément par l'ordinateur
+            var victoire = testeVictoire();
+            if (!victoire) {
+                prochainJoueur();
+                tourJoueur = false;
+                // Si on est dans cliqueCase, c'est que le coup a été joué par le joueur.
+                // Le prochain le sera forcément par l'ordinateur
 
-            // On appelle la fonction coupOrdinateur après 100 millisecondes, afin de laisser
-            // au navigateur le temps d'afficher le coup courant (sinon on pourrait penser
-            // qu'il est figé). C'est le rôle de la fonction setTimeout, qui permet d'appeler une
-            // autre fonction après un certain laps de temps.
-            setTimeout(coupOrdinateur, 100);
-        } else {
-            termine = true;
+                // On appelle la fonction coupOrdinateur après 100 millisecondes, afin de laisser
+                // au navigateur le temps d'afficher le coup courant (sinon on pourrait penser
+                // qu'il est figé). C'est le rôle de la fonction setTimeout, qui permet d'appeler une
+                // autre fonction après un certain laps de temps.
+                setTimeout(coupOrdinateur, 100);
+            } else {
+                termine = true;
+            }
         }
     }
 }
@@ -109,6 +133,7 @@ var passerPremierTour = function() {
     // On appelle la fonction coupOrdinateur après 100 millisecondes, afin de laisser
     // au navigateur le temps d'afficher le coup courant (sinon on pourrait penser
     // qu'il est figé).
+    tourJoueur = false;
     setTimeout(coupOrdinateur, 100);
 }
 
@@ -142,6 +167,7 @@ var suiteCoupOrdinateur = function() {
     var victoire = testeVictoire();
     if (!victoire) {
         prochainJoueur();
+        tourJoueur = true;
         // Contrairement à ce qui se passe pour cliqueCase, le prochain coup sera joué par
         // l'humain: il n'y a donc rien à faire ici, on attend le click du joueur.
     } else {
@@ -204,6 +230,8 @@ var recommenceJeu = function() {
 }
 
 // Remplit le dictionnaire cases en recherchant l'élément html correspondant.
+// On associe aussi à chaque case de la grille les événements correspondants:
+// click de souris, mais aussi entrée/sortie du curseur.
 var initialiseCases = function() {
     for (var i in coordonnees) {
         var coord = coordonnees[i];
@@ -212,6 +240,10 @@ var initialiseCases = function() {
         // On lie l'événement 'onclick' sur cette case de la table à la fonction
         // correspondante:
         cases[coord].onclick = cliqueCase;
+        // On veut aussi changer dynamiquement le fond d'une case lorsque le
+        // curseur entre ou sort:
+        cases[coord].onmouseenter = survoleCase;
+        cases[coord].onmouseleave = survoleCase;
     }
 
 }
