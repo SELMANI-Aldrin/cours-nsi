@@ -16,6 +16,13 @@ const fondAlignementComplet = "darkgray";
 const nombreColonnes = 7;
 const nombreLignes = 6;
 
+const scoreInfini = 100000000;
+const scoreAlignement4 = 10000;
+const scoreAlignement3 = 1000;
+const scoreAlignement2 = 100;
+const scoreAlignement1 = 10;
+const scoreCoupsRemplissage = 1;
+
 var tetralign = {};
 
 tetralign.initialisation = function() {
@@ -317,8 +324,12 @@ tetralign.coupOrdinateur = function() {
 }
 
 tetralign.suiteCoupOrdinateur = function() {
-    var coups = tetralign.coupsDisponibles(tetralign.grille);
-    var colonne = coups[Math.floor(Math.random() * (coups.length - 1))];
+    var colonne = tetralign.negamaxAlphaBeta(tetralign.grille,
+                                                                                  tetralign.joueurCourant,
+                                                                                  -scoreInfini,
+                                                                                  scoreInfini,
+                                                                                  0,
+                                                                                  8);
     var hauteur = tetralign.hauteurPion(tetralign.grille, colonne)
     tetralign.marqueCase(colonne, hauteur, tetralign.joueurCourant);
     tetralign.changeJoueurCourant();
@@ -328,6 +339,150 @@ tetralign.suiteCoupOrdinateur = function() {
     // On termine en effaçant le message "je réfléchix..."
     var reflexion = document.getElementById("reflexion");
     reflexion.style.opacity = 0;
+}
+
+tetralign.calculeScore = function(grille) {
+    // Calcule un score relatif (c'est-à-dire du point de vue du joueurX) en tenant compte du degré
+    // de remplissage des différents alignements, mais aussi du nombre de cases à remplir avant
+    // de pouvoir combler un alignement non complet.
+
+    var score = 0;
+    for (var a in tetralign.alignements) {
+        var nX = 0;
+        var nO = 0;
+        // nR représente le nombre de cases à remplir avant de pouvoir combler une case vide
+        // dans un alignement. Une case vide directement remplissable est plus intéressante
+        // qu'une case qui nécessite 3 étapes pour être remplies.
+        var nR = 0;
+        for (var d = 0; d < 4; d++) {
+            var c = tetralign.alignements[a][d][0];
+            var l = tetralign.alignements[a][d][1];
+            switch (grille[c][l]) {
+                case joueurX:
+                    nX += 1;
+                    break;
+                case joueurO:
+                    nO += 1;
+                    break;
+                case caseVide:
+                    var u = 1;
+                    while (l - u >= 0 && grille[c][l - u] == caseVide) {
+                        nR += 1;
+                        u += 1;
+                    }
+                    break;
+            }
+
+            // On ignore les alignements contenant des pions des 2 couleurs
+            if (nX == 0 || nO == 0) {
+                if (nX == 4) {
+                    score += scoreAlignement4;
+                } else if (nO == 4) {
+                    score -= scoreAlignement4;
+                } else if (nX == 3) {
+                    score += scoreAlignement3 - nR*scoreCoupsRemplissage;
+                } else if (nO == 3) {
+                    score -= scoreAlignement3 - nR*scoreCoupsRemplissage;
+                } else if (nX == 2) {
+                    score += scoreAlignement2 - nR*scoreCoupsRemplissage;
+                } else if (nO == 2) {
+                    score -= scoreAlignement2 - nR*scoreCoupsRemplissage;
+                } else if (nX == 1) {
+                    score += scoreAlignement1 - nR*scoreCoupsRemplissage;
+                } else if (nO == 1) {
+                    score -= scoreAlignement1 - nR*scoreCoupsRemplissage;
+                }
+            }
+        }
+    }
+
+    return score;
+}
+
+tetralign.positionPleine = function(grille) {
+    // Teste si une position est entièrement remplie.
+    for (var c = 0; c < nombreColonnes; c++) {
+        if (! tetralign.colonnePleine(grille, c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+tetralign.positionTerminale = function(grille) {
+    // Teste si une position est terminale, c'est-à-dire si elle est victorieuse pour l'un des deux
+    // joueurs ou bien si elle est complètement remplie (match nul).
+    if (tetralign.positionPleine(grille)) {
+        return true;
+    } else {
+        for (var a in tetralign.alignements) {
+            var nX = 0;
+            var nO = 0;
+            for (var d = 0; d < 4; d++) {
+                var c = tetralign.alignements[a][d][0];
+                var l = tetralign.alignements[a][d][1];
+                switch (tetralign.grille[c][l]) {
+                    case joueurX:
+                        nX += 1;
+                        break;
+                    case joueurO:
+                        nO += 1;
+                        break;
+                }
+            }
+            if (nX == 4 || nO == 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+tetralign.negamaxAlphaBeta = function(grille, joueur, alpha, beta, profondeur, profondeurMax) {
+    // On cherche le meilleur coup en utilisant l'algorithme negamax avec tronquage alpha/beta
+    // décrit à la page wikipedia
+    //
+    // https://en.wikipedia.org/wiki/Negamax#Negamax_with_alpha_beta_pruning
+    //
+    if (profondeur == profondeurMax || tetralign.positionTerminale(grille)) {
+        switch (joueur) {
+            case joueurX:
+                return Math.pow(2, -profondeur)*tetralign.calculeScore(grille);
+            case joueurO:
+                return -Math.pow(2, -profondeur)*tetralign.calculeScore(grille);
+        }
+    } else {
+        var score = -scoreInfini;
+        var coup = -1;
+        var dispo = tetralign.coupsDisponibles(grille);
+        for (i in dispo) {
+            var colonne = dispo[i];
+            var copie = tetralign.copieGrille(grille);
+            var hauteur = tetralign.hauteurPion(copie, colonne);
+            copie[colonne][hauteur] = joueur;
+            var nouveauScore = tetralign.negamaxAlphaBeta(copie,
+                                                                                                      tetralign.adversaire(joueur),
+                                                                                                      -beta,
+                                                                                                      -alpha,
+                                                                                                      profondeur + 1,
+                                                                                                      profondeurMax);
+            nouveauScore *= -Math.pow(2, -profondeur);
+            if (nouveauScore > score) {
+                score = nouveauScore;
+                coup = colonne;
+            }
+            alpha = Math.max(alpha, score);
+            if (alpha >= beta) {
+                break;
+            }
+        }
+
+        if (profondeur == 0) {
+            return coup;
+        } else {
+            return score;
+        }
+    }
 }
 
 tetralign.changeSurbrillance = function(id, couleur) {
