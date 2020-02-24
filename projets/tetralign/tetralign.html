@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="tetralign.css" />
+        <script type="text/javascript" src="tetralign.js"></script>
+        <title>Tetralign</title>
+    </head>
+
+    <body onload="tetralign.initialisation()">
+        <header>
+            <h1>Tetralign</h1>
+        </header>
+
+        <div id="info">
+            <div id="joueur">
+                <p>Joueur courant:</p>
+                <div id="courant"></div>
+            </div>
+
+            <div id="reflexion">
+                Je réfléchis...
+            </div>
+        </div>
+
+        <div id="jeu">
+            <div id="plateau">
+                <table id="grille">
+                </table>
+            </div>
+        </div>
+
+        <div id="commandes">
+            <div id="bouttons">
+                <input type="button" value="Recommencer" onclick="tetralign.recommencerJeu()"/>
+                <input id="passer" type="button" value="Passer le premier tour" onclick="tetralign.passerPremierTour()"/>
+            </div>
+        </div>
+
+        <div id="victoire-fond">
+            <div id="victoire-boite">
+                <p id="victoire">Victoire du joueur <span id="victoire-joueur"></span> !</p>
+                <p id="match-nul">Match nul !</p>
+            </div>
+        </div>
+
+        <footer>
+            <div id="copyright">&copy; février 2020 par Grossé Pascal</div>
+        </footer>
+    </body>
+</html>
