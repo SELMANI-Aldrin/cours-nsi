@@ -175,12 +175,32 @@ tetralign.initialiseAlignements = function() {
 tetralign.initialiseJeu = function() {
     // La variable qui contient le joueur courant (joueurX ou joueurO)
     tetralign.joueurCourant = joueurX;
+    tetralign.afficheJoueurCourant();
 
     // Le joueur courant est-il humain (ou ordinateur) ?
     tetralign.joueurHumain = true;
 
     // Le jeu est-il toujours en cours ?
     tetralign.jeuTermine = false;
+}
+
+tetralign.afficheJoueurCourant = function() {
+    var courant = document.getElementById("courant");
+    if (tetralign.jeuTermine) {
+        courant.style.opacity = 0;
+    } else {
+        courant.style.opacity = 1;
+        switch (tetralign.joueurCourant) {
+            case joueurX:
+                courant.style.backgroundColor = fondPionJaune;
+                courant.style.border = bordPionJaune;
+                break;
+            case joueurO:
+                courant.style.backgroundColor = fondPionRouge;
+                courant.style.border = bordPionRouge;
+                break;
+        }
+    }
 }
 
 tetralign.hauteurPion = function(grille, colonne) {
@@ -278,6 +298,7 @@ tetralign.changeJoueurCourant = function() {
     // Change le joueur courant pour passer à son adversaire. Met à jour l'affichage sur la
     // page web.
     tetralign.joueurCourant = tetralign.adversaire(tetralign.joueurCourant);
+    tetralign.afficheJoueurCourant();
 }
 
 tetralign.coupOrdinateur = function() {
@@ -285,14 +306,28 @@ tetralign.coupOrdinateur = function() {
     // cela ne devrait jamais se produire en dehors d'un bug, puisque cette fonction ne devrait
     // pas être appelée dans ce cas).
     if ( ! tetralign.jeuTermine && ! tetralign.joueurHumain) {
-        var coups = tetralign.coupsDisponibles(tetralign.grille);
-        var colonne = coups[Math.floor(Math.random() * (coups.length - 1))];
-        var hauteur = tetralign.hauteurPion(tetralign.grille, colonne)
-        tetralign.marqueCase(colonne, hauteur, tetralign.joueurCourant);
-        tetralign.changeJoueurCourant();
-        // Le prochain joueur sera le joueur humain;
-        tetralign.joueurHumain = true;
+        // On commence par afficher le message "je réfléchix..."
+        var reflexion = document.getElementById("reflexion");
+        reflexion.style.opacity = 1;
+
+        // Pour permettre au navigateur d'actualiser l'affichage, on appelle la suite de l'IA après
+        // un court délais de 100ms.
+        setTimeout(tetralign.suiteCoupOrdinateur, 100);
     }
+}
+
+tetralign.suiteCoupOrdinateur = function() {
+    var coups = tetralign.coupsDisponibles(tetralign.grille);
+    var colonne = coups[Math.floor(Math.random() * (coups.length - 1))];
+    var hauteur = tetralign.hauteurPion(tetralign.grille, colonne)
+    tetralign.marqueCase(colonne, hauteur, tetralign.joueurCourant);
+    tetralign.changeJoueurCourant();
+    // Le prochain joueur sera le joueur humain;
+    tetralign.joueurHumain = true;
+
+    // On termine en effaçant le message "je réfléchix..."
+    var reflexion = document.getElementById("reflexion");
+    reflexion.style.opacity = 0;
 }
 
 tetralign.changeSurbrillance = function(id, couleur) {
@@ -378,9 +413,10 @@ tetralign.afficheVictoire = function(statut) {
 
 tetralign.recommencerJeu = function() {
     tetralign.effaceGrille(tetralign.grille);
-    tetralign.joueurCourant = joueurX;
     tetralign.joueurHumain = true;
     tetralign.jeuTermine = false;
+    tetralign.joueurCourant = joueurX;
+    tetralign.afficheJoueurCourant();
     var bouttonPasser = document.getElementById("passer");
     bouttonPasser.disabled = false;
     for (var c = 0; c < nombreColonnes; c++) {
@@ -439,7 +475,6 @@ tetralign.testeVictoire = function() {
                 var colonne = tetralign.alignements[termines[a]][d][0];
                 var ligne = tetralign.alignements[termines[a]][d][1];
                 var id = "case" + tetralign.identifiants[colonne][ligne];
-                console.log(id);
                 var cellule = document.getElementById(id);
                 cellule.style.backgroundColor = fondAlignementComplet;
             }
