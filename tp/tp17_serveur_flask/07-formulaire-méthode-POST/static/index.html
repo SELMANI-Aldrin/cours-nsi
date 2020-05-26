@@ -3,13 +3,13 @@
     <head>
         <meta charset="utf-8" />
         <link rel="stylesheet" type="text/css" href="style.css" />
-        <title>Flask pour gérer des formulaires avec la méthode GET</title>
+        <title>Flask pour gérer des formulaires avec la méthode POST</title>
     </head>
     <body>
-        <h1>Formulaire avec la méthode GET</h1>
-        <form action="http://localhost:5000/resultat" method="post">
-            <label>Nom</label> : <input type="text" name="nom" />
-            <label>Prénom</label> : <input type="text" name="prenom" />
+        <h1>Formulaire avec la méthode POST</h1>
+        <form action="resultat" method="post">
+            <label>Nom : </label><input type="text" name="nom" />
+            <label>Prénom : </label><input type="text" name="prenom" />
             <input type="submit" value="Envoyer" />
         </form>
     </body>
